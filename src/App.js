@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import SearchIcon from "./search.svg";
 import MovieCard from "./MovieCard";
@@ -14,22 +14,16 @@ const movie1 = {
     "https://m.media-amazon.com/images/M/MV5BMjE3Mzg0MjAxMl5BMl5BanBnXkFtZTcwNjIyODg5Mg@@._V1_SX300.jpg",
 };
 
-const movie2 = {
-  Title: "Amazing Spiderman Syndrome",
-  Year: "2012",
-  imdbID: "tt2586634",
-  Type: "movie",
-  Poster: "N/A",
-};
-
 const App = () => {
+  const [movies, setMovies] = useState([]);
+
   const searchMovie = async (title) => {
     //call api
     const response = await fetch(`${API_URL}&s=${title}`);
     //after get response we have to get data from json
     const data = await response.json();
 
-    console.log(data.Search);
+    setMovies(data.Search);
   };
 
   useEffect(() => {
@@ -48,9 +42,17 @@ const App = () => {
         ></input>
         <img src={SearchIcon} alt="search" />
       </div>
-      <div className="container">
-        
-      </div>
+      {movies?.length > 0 ? (
+        <div className="container">
+          {movies.map((movie) => (
+            <MovieCard movie={movie} />
+          ))}
+        </div>
+      ) : (
+        <div className="empty">
+          <h2>No movies found</h2>
+        </div>
+      )}
     </div>
   );
 };
